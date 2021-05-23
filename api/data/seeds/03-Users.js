@@ -1,14 +1,13 @@
 
 exports.seed = function(knex) {
   // Deletes ALL existing entries
-  return knex('Users').truncate()
+  return knex('Users').del()
     .then(function () {
       // Inserts seed entries
       return knex('Users').insert([
-        {user_username: 'admin', user_password: 'password', user_email: 'admin@gmail.com', role_id: 1},
-        {user_username: 'client', user_password: 'password', user_email: 'client@gmail.com', role_id: 2},
-        {user_username: 'bababooey', user_password: 'password', user_email: 'sheesh@gmail.com', role_id: 2},
-        {user_username: 'bababooey', user_password: 'password', user_email: 'sheesh@gmail.com', role_id: 2},
+        {username: 'admin', password: 'password', email: 'admin@gmail.com', role_id: 1},
+        {username: 'client', password: 'password', email: 'client@gmail.com', role_id: 2},
+        {username: 'bababooey', password: 'password', email: 'sheesh@gmail.com', role_id: 2},
       ]);
     });
 };
