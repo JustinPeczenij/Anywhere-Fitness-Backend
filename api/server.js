@@ -9,7 +9,9 @@ const usersRouter = require('./routers-models/users/users-router')
 const server = express()
 server.use(express.json())
 server.use(helmet())
-server.use(cors())
+server.use(cors({
+    origin: 'https://ft-anywhere-fitness-2.herokuapp.com'
+}))
 
 server.use('/', authRouter)
 server.use('/users', usersRouter)
