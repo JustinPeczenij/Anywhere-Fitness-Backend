@@ -2,14 +2,14 @@ const Users = require('../users/users-model')
 
 const checkCredentialsLogin = async (req, res, next) => {
     try {
-        const user = await Users.findByUsername(req.body.username)
-        if(!user) next({status: 404, message: 'invalid credentials'})
         if(!req.body.username || !req.body.password){
             next({ status: 422, message: 'username and password are required' })
         } 
         if(typeof req.body.password !== 'string'){
             next({ status: 422, message: 'password must be a string' })
         }
+        const user = await Users.findByUsername(req.body.username)
+        if(!user) next({status: 404, message: 'invalid credentials'})
         else next()
     } catch(err) {
         next(err)
