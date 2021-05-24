@@ -1,7 +1,40 @@
 const router = require('express').Router()
+const Users = require('./users-model')
+const restricted = require('./restricted-middleware')
 
-router.get('/', (req, res) => {
-    res.send('users')
+// [GET] all users
+router.get('/all', restricted, async (req, res, next) => {
+    try {
+        const allUsers = await Users.getAll()
+        res.status(200).json(allUsers)
+    } catch(err) {
+        next(err)
+    }
+})
+
+// [GET] current user
+router.get('/current', restricted, async (req, res, next) => {
+    try {
+        const info = {
+            user_id: req.decodedJwt.sub,
+            username: req.decodedJwt.username,
+            email: req.decodedJwt.email,
+            role: req.decodedJwt.role,
+        }
+        res.status(200).json(info)
+    } catch(err) {
+        next(err)
+    }
+})
+
+// [GET] user by id
+router.get('/:id', restricted, async (req, res, next) => {
+    try {
+        const userById = await Users.findById(req.params.id)
+        res.status(200).json(userById)
+    } catch(err) {
+        next(err)
+    }
 })
 
 module.exports = router
