@@ -11,7 +11,7 @@ server.use(express.json())
 server.use(helmet())
 server.use(cors())
 
-server.use('/auth', authRouter)
+server.use('/', authRouter)
 server.use('/users', usersRouter)
 server.use('/classes', classesRouter)
 

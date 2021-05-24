@@ -9,10 +9,10 @@ const tokenBuilder = require('./tokenBuilder')
 router.post('/register', amw.checkCredentialsRegister, amw.convertRoles, async (req, res, next) => {
     // hash new user's password
     try {
-    let user = req.body
-    const rounds = Number(String(process.env.BCRYPT_ROUNDS))
-    const hash = bcrypt.hashSync(user.password, rounds)
-    user.password = hash
+        let user = req.body
+        const rounds = Number(String(process.env.BCRYPT_ROUNDS))
+        const hash = bcrypt.hashSync(user.password, rounds)
+        user.password = hash
     // add new user to db
         const newUser = await Users.add(req.body)
         res.status(201).json(newUser)
@@ -33,7 +33,7 @@ router.post('/login', amw.checkCredentialsLogin, async (req, res, next) => {
             });
         } else res.status(400).json({ message: 'invalid credentials' })
     } catch(err) {
-        next()
+        next(err)
     }
 })
 
