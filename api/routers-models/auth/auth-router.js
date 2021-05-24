@@ -6,7 +6,7 @@ const bcrypt = require('bcrypt')
 const tokenBuilder = require('./tokenBuilder')
 
 //roles are converted to 1-INSTRUCTOR or 2-CLIENT
-router.post('/register', amw.convertRoles, async (req, res, next) => {
+router.post('/register', amw.checkCredentialsRegister, amw.convertRoles, async (req, res, next) => {
     // hash new user's password
     try {
     let user = req.body

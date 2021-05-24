@@ -1,16 +1,24 @@
-const checkCredentialsLogin = (req, res, next) => {
-    if(!req.body.username || !req.body.password){
-        next({ status: 422, message: 'username and password are required' })
-    } 
-    if(typeof req.body.password !== 'string'){
-        next({ status: 422, message: 'password must be a string' })
+const Users = require('../users/users-model')
+
+const checkCredentialsLogin = async (req, res, next) => {
+    try {
+        const user = await Users.findByUsername(req.body.username)
+        if(!user) next({status: 404, message: 'invalid credentials'})
+        if(!req.body.username || !req.body.password){
+            next({ status: 422, message: 'username and password are required' })
+        } 
+        if(typeof req.body.password !== 'string'){
+            next({ status: 422, message: 'password must be a string' })
+        }
+        else next()
+    } catch(err) {
+        next(err)
     }
-    else next()
 }
 
 const checkCredentialsRegister = (req, res, next) => { //look at this after login
-    if(!req.body.username || !req.body.password){
-        next({ status: 422, message: 'username and password are required' })
+    if(!req.body.username || !req.body.password || !req.body.email){
+        next({ status: 422, message: 'username, email, and password are required' })
     } else next()
 }
 
