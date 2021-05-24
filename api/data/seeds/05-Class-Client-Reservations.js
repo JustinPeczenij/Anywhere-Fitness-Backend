@@ -6,7 +6,7 @@ exports.seed = function(knex) {
       // Inserts seed entries
       return knex('Class_Client_Reservations').insert([
         {class_id: 1, user_id: 2},
-        {class_id: 1, user_id: 3}
+        {class_id: 1, user_id: 2}
       ]);
     });
 };
