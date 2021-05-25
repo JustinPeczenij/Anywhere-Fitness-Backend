@@ -1,7 +1,7 @@
 const router = require('express').Router()
-const Users = require('./users-model')
-const restricted = require('./restricted-middleware')
-const umw = require('./users-middleware')
+const Users = require('../routers-models/users/users-model')
+const restricted = require('../routers-models/users/restricted-middleware')
+const umw = require('../routers-models/users/users-middleware')
 
 // [GET] all users
 router.get('/', restricted, async (req, res, next) => {

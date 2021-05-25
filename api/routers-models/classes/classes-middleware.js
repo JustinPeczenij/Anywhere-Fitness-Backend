@@ -2,9 +2,9 @@ const Classes = require('./classes-model')
 
 const checkClassId = async (req, res, next) => {
     try {
-        const classById = await Classes.getById(req.params.id)
+        const classById = await Classes.getById(req.params.id || req.params.class_id)
         if(classById.length === 0) {
-            next({ status: 404, message: `can't find a class with id ${req.params.id}`})
+            next({ status: 404, message: `can't find a class with id ${req.params.id || req.params.class_id}`})
         } else {
             req.classById = classById
             next()

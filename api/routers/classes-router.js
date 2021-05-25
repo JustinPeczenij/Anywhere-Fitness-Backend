@@ -1,7 +1,7 @@
 const router = require('express').Router()
-const Classes = require('./classes-model')
-const restricted = require('../users/restricted-middleware')
-const cmw = require('./classes-middleware')
+const Classes = require('../routers-models/classes/classes-model')
+const restricted = require('../routers-models/users/restricted-middleware')
+const cmw = require('../routers-models/classes/classes-middleware')
 
 
 router.get('/', restricted, async (req, res, next) => {
@@ -25,7 +25,7 @@ router.get('/', restricted, async (req, res, next) => {
                         username: cl.username,
                         email: cl.email,
                         role_name: cl.role_name
-                    }
+                }
             }
         ])
         }, [])
