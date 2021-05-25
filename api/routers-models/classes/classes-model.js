@@ -71,10 +71,23 @@ const add = async (cl) => {
     return formatted
 }
 
+const remove = async (class_id) => {
+    const deleted = await getById(class_id)
+    await db('Classes')
+        .where('class_id', class_id)
+        .del()
+    return deleted
+}
 
+const update = async(class_id, updates) => {
+    await db("Classes").where("class_id", class_id).update(updates)
+    return getById(class_id)
+}
 
 module.exports = {
     getAll,
     getById,
-    add
+    add,
+    remove,
+    update
 }

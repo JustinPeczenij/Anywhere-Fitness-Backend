@@ -1,9 +1,10 @@
 const router = require('express').Router()
 const Classes = require('./classes-model')
 const restricted = require('../users/restricted-middleware')
+const cmw = require('./classes-middleware')
 
-// YOU NEED TO JOIN TABLES AND RESTRUCTURE THE DATA FOR INSTRUCTOR AND ROLE 
 //maybe make classes/all to stay congruent or vise versa
+//middlware validation
 router.get('/', restricted, async (req, res, next) => {
     try {
         const allClasses = await Classes.getAll()
@@ -35,18 +36,37 @@ router.get('/', restricted, async (req, res, next) => {
     }
 })
 
-router.get('/:id', restricted, async (req, res, next) => {
+router.get('/:id', restricted, cmw.checkClassId, async (req, res, next) => {
     try {
-        const classById = await Classes.getById(req.params.id)
-        res.status(200).json(classById)
+        res.status(200).json(req.classById)
     } catch(err) {
         next(err)
     }
 })
 
-router.post('/', restricted, async (req, res, next) => {
+router.post('/', restricted, cmw.checkBody, async (req, res, next) => {
     try {
-        const newClass = await Classes.add(req.body)
+        const newClass = await Classes.add(req.newClass)
+        res.status(201).json(newClass)
+    } catch(err) {
+        next(err)
+    }
+})
+
+router.delete('/:id', restricted, cmw.checkClassId, async (req, res, next) => {
+    try {
+        await Classes.remove(req.params.id)
+        res.status(200).json(req.classById)
+    } catch(err) {
+        next(err)
+    }
+})
+
+//PUT OR PATCH REQUEST
+//PUT EXPECTS WHOLE NEW BODY????
+router.put('/:id', restricted, cmw.checkClassId, async (req, res, next) => {
+    try {
+        const newClass = await Classes.update(req.params.id, req.body)
         res.status(200).json(newClass)
     } catch(err) {
         next(err)

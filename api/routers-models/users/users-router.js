@@ -31,7 +31,9 @@ router.get('/current', restricted, async (req, res, next) => {
 router.get('/:id', restricted, async (req, res, next) => {
     try {
         const userById = await Users.findById(req.params.id)
-        res.status(200).json(userById)
+        if(!userById) {
+            next({ status: 404, message: `user with id ${req.params.id} was not found` })
+        } else res.status(200).json(userById)
     } catch(err) {
         next(err)
     }
