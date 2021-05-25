@@ -25,11 +25,14 @@ const checkBody = (req, res, next) => {
     if(!req.body.max_class_size) next({ status: 422, message: 'class max class size is required - "max_class_size"' })
     if(!req.body.user_id) next({ status: 422, message: 'class instructor is required - "user_id" is all you need' })
     if(!req.body.num_registered) {
-        req.newClass = {
-            ...req.body,
-            num_registered: 0
+        if(!req.body.user_id) next({ status: 422 })
+        else {
+            req.newClass = {
+                ...req.body,
+                num_registered: 0
+            }
+            next()
         }
-        next()
     }
     else {
         req.newClass = req.body

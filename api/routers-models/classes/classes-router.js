@@ -3,8 +3,7 @@ const Classes = require('./classes-model')
 const restricted = require('../users/restricted-middleware')
 const cmw = require('./classes-middleware')
 
-//maybe make classes/all to stay congruent or vise versa
-//middlware validation
+
 router.get('/', restricted, async (req, res, next) => {
     try {
         const allClasses = await Classes.getAll()
