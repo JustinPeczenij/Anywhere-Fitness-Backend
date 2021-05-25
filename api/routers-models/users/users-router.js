@@ -1,12 +1,33 @@
 const router = require('express').Router()
 const Users = require('./users-model')
 const restricted = require('./restricted-middleware')
+const umw = require('./users-middleware')
 
 // [GET] all users
 router.get('/', restricted, async (req, res, next) => {
     try {
         const allUsers = await Users.getAll()
         res.status(200).json(allUsers)
+    } catch(err) {
+        next(err)
+    }
+})
+
+// [GET] all instructors
+router.get('/instructors', restricted, async (req, res, next) => {
+    try {
+        const allInstructors = await Users.getInstructors()
+        res.status(200).json(allInstructors)
+    } catch(err) {
+        next(err)
+    }
+})
+
+// [GET] all clients
+router.get('/clients', restricted, async (req, res, next) => {
+    try {
+        const allClients = await Users.getClients()
+        res.status(200).json(allClients)
     } catch(err) {
         next(err)
     }
@@ -28,12 +49,23 @@ router.get('/current', restricted, async (req, res, next) => {
 })
 
 // [GET] user by id
-router.get('/:id', restricted, async (req, res, next) => {
+router.get('/:id', restricted, umw.checkUserId, (req, res) => {
+    res.status(200).json(req.user)
+})
+
+router.put('/:id', restricted, umw.checkUserId, async (req, res, next) => {
     try {
-        const userById = await Users.findById(req.params.id)
-        if(!userById) {
-            next({ status: 404, message: `user with id ${req.params.id} was not found` })
-        } else res.status(200).json(userById)
+        const updated = await Users.update(req.params.id, req.body)
+        res.status(202).json(updated)
+    } catch(err) {
+        next(err)
+    }
+})
+
+router.delete('/:id', restricted, umw.checkUserId, async (req, res, next) => {
+    try {
+        await Users.remove(req.params.id)
+        res.status(200).json(req.user)
     } catch(err) {
         next(err)
     }

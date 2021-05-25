@@ -43,6 +43,9 @@ router.get('/:id', restricted, cmw.checkClassId, async (req, res, next) => {
     }
 })
 
+//GET ALL CLIENT IN SPECIFIC CLASS?
+/// /:id/reserved
+
 router.post('/', restricted, cmw.checkBody, async (req, res, next) => {
     try {
         const newClass = await Classes.add(req.newClass)
@@ -55,14 +58,12 @@ router.post('/', restricted, cmw.checkBody, async (req, res, next) => {
 router.delete('/:id', restricted, cmw.checkClassId, async (req, res, next) => {
     try {
         await Classes.remove(req.params.id)
-        res.status(200).json(req.classById)
+        res.status(202).json(req.classById)
     } catch(err) {
         next(err)
     }
 })
 
-//PUT OR PATCH REQUEST
-//PUT EXPECTS WHOLE NEW BODY????
 router.put('/:id', restricted, cmw.checkClassId, async (req, res, next) => {
     try {
         const newClass = await Classes.update(req.params.id, req.body)

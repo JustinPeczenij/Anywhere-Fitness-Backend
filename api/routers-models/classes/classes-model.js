@@ -79,7 +79,7 @@ const remove = async (class_id) => {
     return deleted
 }
 
-const update = async(class_id, updates) => {
+const update = async (class_id, updates) => {
     await db("Classes").where("class_id", class_id).update(updates)
     return getById(class_id)
 }
