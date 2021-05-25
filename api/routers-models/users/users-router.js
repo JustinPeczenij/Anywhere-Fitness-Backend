@@ -3,7 +3,7 @@ const Users = require('./users-model')
 const restricted = require('./restricted-middleware')
 
 // [GET] all users
-router.get('/all', restricted, async (req, res, next) => {
+router.get('/', restricted, async (req, res, next) => {
     try {
         const allUsers = await Users.getAll()
         res.status(200).json(allUsers)

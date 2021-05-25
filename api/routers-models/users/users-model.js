@@ -1,11 +1,18 @@
 const db = require('../../data/db-config')
 
 const getAll = () => {
-    return db('Users')
+    return db('Users as U')
+        .join('Roles as R', 'U.role_id', 'R.role_id')
+        .select('U.user_id', 'U.username', 'U.email', 'R.role_name as role')
+
 }
 
 const findById = (user_id) => {
-    return db('Users').where('user_id', user_id).first()
+    return db('Users as U')
+        .where('user_id', user_id)
+        .join('Roles as R', 'U.role_id', 'R.role_id')
+        .select('U.user_id', 'U.username', 'U.email', 'R.role_name as role')
+        .first()
 }
 
 const findByUsername = (username) => {
