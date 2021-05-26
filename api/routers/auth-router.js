@@ -5,16 +5,6 @@ const amw = require('../routers-models/auth/auth-middleware')
 const bcrypt = require('bcrypt')
 const tokenBuilder = require('../routers-models/auth/tokenBuilder')
 
-/**
- * @swagger
- * /register:
- *  post:
- *    summary: register a new user to the database and return a token
- *    responses:
- *        201:
- *          description: user object, token
- *          content: application/json
- */
 //roles are converted to 1-INSTRUCTOR or 2-CLIENT
 router.post('/register', amw.checkCredentialsRegister, amw.convertRoles, async (req, res, next) => {
     // hash new user's password
