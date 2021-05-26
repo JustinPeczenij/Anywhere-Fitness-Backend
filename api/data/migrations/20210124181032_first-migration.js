@@ -25,6 +25,7 @@ exports.up = async (knex) => {
       tbl.string('max_class_size', 320).notNullable()
       tbl.integer('user_id').unsigned().notNullable()
       tbl.foreign('user_id').references('Users.user_id')
+        .onDelete("CASCADE")
     })
     .createTable('Class_Client_Reservations', (tbl) => {
       tbl.integer('class_id').unsigned().notNullable()

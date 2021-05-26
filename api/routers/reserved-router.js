@@ -14,9 +14,9 @@ router.get('/', restricted, async (req, res, next) => {
 })
 
 // [GET] returns array of reserved users for a specific class
-router.get('/:class_id', restricted, cmw.checkClassId, async (req, res, next) => {
+router.get('/:user_id', restricted, async (req, res, next) => {
     try {
-        const [reservedClass] = await Reserved.getReservationsByClass(req.params.class_id)
+        const [reservedClass] = await Reserved.getReservationsByUser(req.params.user_id)
         res.status(200).json(reservedClass)
     } catch(err) {
         next(err)
@@ -24,18 +24,29 @@ router.get('/:class_id', restricted, cmw.checkClassId, async (req, res, next) =>
 })
 
 // [POST] user_id and class_id to Class_Client_Reservations table
-router.post('/:class_id', restricted, cmw.checkClassId, async (req, res, next) => {
+// requires class_id in the req.body
+router.post('/:user_id', restricted, cmw.checkClassId, async (req, res, next) => {
     try {
-        if(!req.body.user_id || !req.params.class_id) next({ status: 422, message: 'user_id and class_id are required' })
+        if(!req.params.user_id || !req.body.class_id) next({ status: 422, message: 'user_id and class_id are required' })
         else {
-            const [reservation] = await Reserved.addReservation({ class_id: req.params.class_id, user_id: req.body.user_id })
+            const reservation = await Reserved.addReservation({ class_id: req.body.class_id, user_id: req.params.user_id })
             const updatedNumRegistered = {
-                ...reservation,
-                num_registered: reservation.reserved_clients.length
-            } 
+                class_id: reservation.class_id,
+                num_registered: parseInt(reservation.num_registered + 1)
+            }
             await Reserved.updateClassWithNumRegistered(updatedNumRegistered)
-            res.status(201).json(updatedNumRegistered)
+            res.status(201).json({ message: 'client has successfully reserved a spot'})
         }
+    } catch(err) {
+        next(err)
+    }
+})
+
+//requires class_id in the body
+router.delete('/:user_id', restricted, cmw.checkClassId, async (req, res, next) => {
+    try {
+        await Reserved.deleteReservation(req.body.class_id, req.params.user_id)
+        res.status(200).json({ message: 'client has successfully removed their reservation'})
     } catch(err) {
         next(err)
     }
