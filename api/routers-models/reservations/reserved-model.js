@@ -57,45 +57,37 @@ const getReservationsByUser = async (user_id) => {
         const formatted = await reservedClass.reduce((acc, cl) => {
             if(acc.length === 0) {
                 return acc.concat({
-                    user_id: cl.user_id,
-                    username: cl.username,
-                    email: cl.email,
-                    role_name: cl.role_name,
-                    classes: [
-                        {
-                            class_id: cl.class_id,
-                            name: cl.name,
-                            type: cl.type,
-                            date: cl.date,
-                            start_time: cl.start_time,
-                            duration: cl.duration,
-                            intensity_level: cl.intensity_level,
-                            location: cl.location,
-                            num_registered: cl.num_registered,
-                            max_class_size: cl.max_class_size,
-                        }
-                    ]
-                        
-                    
-                })
-            } else {
-                acc[0].classes.push({
-                    class_id: cl.class_id,
-                    name: cl.name,
-                    type: cl.type,
-                    date: cl.date,
-                    start_time: cl.start_time,
-                    duration: cl.duration,
-                    intensity_level: cl.intensity_level,
-                    location: cl.location,
-                    num_registered: cl.num_registered,
-                    max_class_size: cl.max_class_size,
-                })
-            }
-            return acc
-        }, [])
-
-        return formatted
+                class_id: cl.class_id,
+                name: cl.name,
+                type: cl.type,
+                date: cl.date,
+                start_time: cl.start_time,
+                duration: cl.duration,
+                intensity_level: cl.intensity_level,
+                location: cl.location,
+                num_registered: cl.num_registered,
+                max_class_size: cl.max_class_size,
+                reserved_clients: [
+                    {
+                        user_id: cl.user_id,
+                        username: cl.username,
+                        email: cl.email,
+                        role_name: cl.role_name
+                    }
+                ]
+            })
+        } else {
+            const currentClass = acc.find(cla => cla.class_id === cl.class_id)
+            currentClass.reserved_clients.push({
+                user_id: cl.user_id,
+                username: cl.username,
+                email: cl.email,
+                role_name: cl.role_name
+            })
+        }
+        return acc
+    }, [])
+    return formatted
 }
 
 const addReservation = async (ids) => {
@@ -118,3 +110,5 @@ module.exports = {
     updateClassWithNumRegistered,
     deleteReservation
 }
+
+
