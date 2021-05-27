@@ -40,7 +40,7 @@ router.post('/:user_id', restricted, cmw.checkClassId, async (req, res, next) =>
             }
             : updatedNumRegistered = {
                 class_id: reservation.class_id,
-                num_registered:  parseInt(reservation.num_registered - 1)
+                num_registered:  parseInt(reservation.num_registered + 1)
             } 
             await Reserved.updateClassWithNumRegistered(updatedNumRegistered)
             res.status(201).json({ message: 'client has successfully reserved a spot'})
