@@ -23,6 +23,8 @@ router.get('/:user_id', restricted, async (req, res, next) => {
     }
 })
 
+//check for max_class_size before adding??
+
 // [POST] user_id and class_id to Class_Client_Reservations table
 // requires class_id in the req.body
 router.post('/:user_id', restricted, cmw.checkClassId, async (req, res, next) => {
@@ -51,18 +53,8 @@ router.post('/:user_id', restricted, cmw.checkClassId, async (req, res, next) =>
 //requires class_id in the body
 router.delete('/:user_id', restricted, cmw.checkClassId, async (req, res, next) => {
     try {
-        const [deleted] = await Reserved.deleteReservation(req.body.class_id, req.params.user_id)
-        let updatedNumRegistered
-        deleted.reserved_clients
-        ? updatedNumRegistered = {
-                class_id: deleted.class_id,
-                num_registered:  deleted.reserved_clients.length
-            }
-        : updatedNumRegistered = {
-                class_id: deleted.class_id,
-                num_registered:  parseInt(deleted.num_registered - 1)
-            }     
-        await Reserved.updateClassWithNumRegistered(updatedNumRegistered)
+        await Reserved.deleteReservation(req.body.class_id, req.params.user_id)
+        // await Reserved.updateClassWithNumRegistered(deleted)
         res.status(200).json({ message: 'client has successfully removed their reservation'})
     } catch(err) {
         next(err)
