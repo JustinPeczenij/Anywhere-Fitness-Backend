@@ -25,7 +25,7 @@ const getById = async (class_id) => {
               duration: cl.duration,
               intensity_level: cl.intensity_level,
               location: cl.location,
-              num_registered: cl.num_registered,
+              num_registered: parseInt(cl.num_registered),
               max_class_size: cl.max_class_size,
               instructor: {
                   user_id: cl.user_id,
@@ -57,7 +57,7 @@ const add = async (cl) => {
               duration: cl.duration,
               intensity_level: cl.intensity_level,
               location: cl.location,
-              num_registered: cl.num_registered,
+              num_registered: parseInt(cl.num_registered),
               max_class_size: cl.max_class_size,
               instructor: {
                   user_id: cl.user_id,

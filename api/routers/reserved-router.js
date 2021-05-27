@@ -30,10 +30,16 @@ router.post('/:user_id', restricted, cmw.checkClassId, async (req, res, next) =>
         if(!req.params.user_id || !req.body.class_id) next({ status: 422, message: 'user_id and class_id are required' })
         else {
             const [reservation] = await Reserved.addReservation({ class_id: req.body.class_id, user_id: req.params.user_id })
-            const updatedNumRegistered = {
+            let updatedNumRegistered
+            reservation.reserved_clients
+            ? updatedNumRegistered = {
                 class_id: reservation.class_id,
-                num_registered: parseInt(reservation.num_registered + 1)
+                num_registered:  reservation.reserved_clients.length
             }
+            : updatedNumRegistered = {
+                class_id: reservation.class_id,
+                num_registered:  parseInt(reservation.num_registered - 1)
+            } 
             await Reserved.updateClassWithNumRegistered(updatedNumRegistered)
             res.status(201).json({ message: 'client has successfully reserved a spot'})
         }
@@ -45,7 +51,18 @@ router.post('/:user_id', restricted, cmw.checkClassId, async (req, res, next) =>
 //requires class_id in the body
 router.delete('/:user_id', restricted, cmw.checkClassId, async (req, res, next) => {
     try {
-        await Reserved.deleteReservation(req.body.class_id, req.params.user_id)
+        const [deleted] = await Reserved.deleteReservation(req.body.class_id, req.params.user_id)
+        let updatedNumRegistered
+        deleted.reserved_clients
+        ? updatedNumRegistered = {
+                class_id: deleted.class_id,
+                num_registered:  deleted.reserved_clients.length
+            }
+        : updatedNumRegistered = {
+                class_id: deleted.class_id,
+                num_registered:  parseInt(deleted.num_registered - 1)
+            }     
+        await Reserved.updateClassWithNumRegistered(updatedNumRegistered)
         res.status(200).json({ message: 'client has successfully removed their reservation'})
     } catch(err) {
         next(err)
