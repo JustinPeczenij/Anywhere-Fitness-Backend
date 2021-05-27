@@ -16,7 +16,7 @@ router.get('/', restricted, async (req, res, next) => {
 // [GET] returns array of reserved users for a specific class
 router.get('/:user_id', restricted, async (req, res, next) => {
     try {
-        const [reservedClass] = await Reserved.getReservationsByUser(req.params.user_id)
+        const reservedClass = await Reserved.getReservationsByUser(req.params.user_id)
         res.status(200).json(reservedClass)
     } catch(err) {
         next(err)
@@ -29,7 +29,7 @@ router.post('/:user_id', restricted, cmw.checkClassId, async (req, res, next) =>
     try {
         if(!req.params.user_id || !req.body.class_id) next({ status: 422, message: 'user_id and class_id are required' })
         else {
-            const reservation = await Reserved.addReservation({ class_id: req.body.class_id, user_id: req.params.user_id })
+            const [reservation] = await Reserved.addReservation({ class_id: req.body.class_id, user_id: req.params.user_id })
             const updatedNumRegistered = {
                 class_id: reservation.class_id,
                 num_registered: parseInt(reservation.num_registered + 1)
