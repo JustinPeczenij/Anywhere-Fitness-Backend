@@ -151,7 +151,7 @@ const deleteReservation = async (class_id, user_id) => {
         .where('CCR.class_id', class_id)
 
         const formatted = await reservedClass.reduce((acc, cl) => {
-            if(acc.length === 0) {
+        if(acc.length === 0) {
                 return acc.concat({
                 class_id: cl.class_id,
                 name: cl.name,
